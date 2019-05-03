@@ -1,6 +1,7 @@
 package com.example.imageeffect58;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         // image processing in order to perform effect on image
         imageView = (ImageView) findViewById(R.id.image_view);
 //        image_drawable = getDrawable(R.drawable.tommy_tucker);
-        getResources().getDrawable(R.drawable.tommy_tucker);
+        image_drawable = getResources().getDrawable(R.drawable.tommy_tucker);
         // NB getResources().getDrawable deprecated https://stackoverflow.com/q/29041027/11365317
         // however, minimum API level 17 (my phone) so can't use just getDrawable alone
 
@@ -37,10 +38,32 @@ public class MainActivity extends AppCompatActivity {
         // get the manipulable bitmap of the image
         Bitmap newImage = invertImage(image_bitmap);
         imageView.setImageBitmap(newImage);
+    }
 
+    // Invert a bitmap image for processing
+    public static Bitmap invertImage(Bitmap originalImage)
+    {
+        Bitmap finalImage = Bitmap.createBitmap(originalImage.getWidth(), originalImage.getHeight(),
+                originalImage.getConfig());
+        int R, G, B, Alpha;         // RGB and alpha (transparency) needed
+        int pixelColour;
+        int height = originalImage.getHeight();
+        int width = originalImage.getWidth();
 
-
-
+        // scan through each pixel and invert
+        for (int y=0; y < height; y++)
+        {
+            for (int x=0; x < width; x++)
+            {
+                pixelColour = originalImage.getPixel(x, y);
+                Alpha = Color.alpha(pixelColour);
+                R = 255 - Color.red(pixelColour);
+                G = 255 - Color.green(pixelColour);
+                B = 255 - Color.blue(pixelColour);
+                finalImage.setPixel(x, y, Color.argb(Alpha, R, G, B));
+            }
+        }
+        return finalImage;
     }
 
     @Override
