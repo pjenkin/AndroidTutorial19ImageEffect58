@@ -4,9 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -29,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
 
         // image processing in order to perform effect on image
         imageView = (ImageView) findViewById(R.id.image_view);
+
+        /*
+        // commented out to do layering, not inverting (60)
+
 //        image_drawable = getDrawable(R.drawable.tommy_tucker);
         image_drawable = getResources().getDrawable(R.drawable.tommy_tucker);
         // NB getResources().getDrawable deprecated https://stackoverflow.com/q/29041027/11365317
@@ -38,6 +44,19 @@ public class MainActivity extends AppCompatActivity {
         // get the manipulable bitmap of the image
         Bitmap newImage = invertImage(image_bitmap);
         imageView.setImageBitmap(newImage);
+        */
+
+        // combine layers (image and texture) in order to get an effect
+        Drawable[] layers = new Drawable[2];
+        layers[0] = ContextCompat.getDrawable(this, R.drawable.tommy_tucker);
+        // NB getResources().getDrawable deprecated https://stackoverflow.com/q/29041027/11365317
+        layers[1] = ContextCompat.getDrawable(this,
+                R.drawable.grunge_overlay_texture_2_12_1024x725);
+        // the 'effects' image must be somewhat transparent at least in parts (alpha < 1)
+        LayerDrawable layerDrawable = new LayerDrawable(layers);
+        // combine the layers in a new layerdrawable
+        imageView.setImageDrawable(layerDrawable);
+
     }
 
     // Invert a bitmap image for processing
